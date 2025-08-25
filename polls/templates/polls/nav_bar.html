@@ -1,0 +1,65 @@
+<!-- Navigation -->
+<nav class="bg-blue-600 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center">
+                <a href="#" class="text-white font-bold text-xl">Django Polls</a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#" class="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                <a href="#" class="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium">Polls</a>
+                
+                <!-- Dropdown -->
+                <div class="relative group">
+                    <button class="text-white hover:text-blue-200 px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                        More
+                        <svg class="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">About</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Contact</a>
+                        <hr class="my-1">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Help</a>
+                    </div>
+                </div>
+                
+                <a href="#" class="text-blue-200 px-3 py-2 rounded-md text-sm font-medium">Settings</a>
+            </div>
+            
+            <!-- Search -->
+            <div class="hidden md:flex items-center">
+                <form class="flex">
+                    <input type="search" placeholder="Search" class="px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <button type="submit" class="px-4 py-2 bg-blue-700 text-white border border-blue-700 rounded-r-md hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        Search
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="md:hidden flex items-center">
+                <button class="text-white hover:text-blue-200 focus:outline-none focus:text-blue-200">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mobile Navigation -->
+    <div class="md:hidden hidden">
+        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            <a href="#" class="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+            <a href="#" class="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium">Polls</a>
+            <a href="#" class="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium">About</a>
+            <a href="#" class="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            <a href="#" class="text-white hover:text-blue-200 block px-3 py-2 rounded-md text-base font-medium">Help</a>
+            <a href="#" class="text-blue-200 block px-3 py-2 rounded-md text-base font-medium">Settings</a>
+        </div>
+    </div>
+</nav>

@@ -1,14 +1,62 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Document</title>   
+    <link rel="stylesheet" href="{% static 'polls/css/style.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-    {% block lion %}{% endblock %}
-    <h1>이거는 {% block name %}base.html{% endblock%}의 내용입니다</h1>
+<body class="bg-gray-50">
+    {% include 'polls/nav_bar.html' %}
+    <div class="max-w-xl mx-auto my-8 space-y-8">
+        <!-- GET: 데이터 조회 (검색, 필터링) -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-bold mb-4 text-blue-700">데이터 조회 (검색, 필터링) GET</h2>
+            <form method="GET" action="/search/" class="flex items-center space-x-2">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="검색어"
+                    class="flex-1 px-4 py-2 border border-blue-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                >검색</button>
+            </form>
+            <p class="text-xs text-gray-500 mt-2">예시 URL: <span class="font-mono bg-gray-100 px-2 py-1 rounded">/search/?q=django</span></p>
+        </div>
 
-    {% block content %}{% endblock %}
+        <!-- POST: 데이터 수정 (생성, 수정, 삭제) -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-bold mb-4 text-green-700">데이터 수정 (생성, 수정, 삭제) POST</h2>
+            <form method="POST" action="/create/" class="flex items-center space-x-2">
+                {% csrf_token %}
+                <input 
+                    type="text" 
+                    name="title" 
+                    placeholder="제목 입력"
+                    class="flex-1 px-4 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-400"
+                >
+                <button 
+                    type="submit"
+                    class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                >저장</button>
+            </form>
+        </div>
+    </div>
+
+    
+<!-- 앱 하부에 static 이름의 디렉토리 만들기
+static 아래에 app 이름 폴더 생성
+그 폴더 아래에 js, css, img 폴더 생성
+css에는 style.css생성
+img에는 사진 넣기
+{% load static %}으로 로딩
+사용할때는 경로를 {% static '대상파일경로' %}
+2시 35분까지 해보겠습니다 -->
+
 </body>
 </html>

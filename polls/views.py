@@ -5,6 +5,11 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import Article, Memo
 
+def search(request):
+    query = request.GET['q']
+    return HttpResponse(f"{query}가 검색되었습니다!!")
+
+
 # index에서 context 만들어서 보내기기
 def index(request):
     memos = Memo.objects.all()
