@@ -15,12 +15,19 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">              
+              <!-- 메모 목록과 생성에 url 만들기 -->
+               <!-- memo_list, memo_create -->
+              <!-- view 만들기(빈 뷰만) -->
+               <!-- def memo_list.... return render(...,polls/memo_list.html) -->
+                <!-- create도 만들기 -->
+              <!-- 빈 html만들기 -->
+                <!-- 위 두 view에 대응되는 html 2개 만들기 -->
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Home</a>
+                <a class="nav-link" href="{% url 'polls:memo_list' %}">Memo목록</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">Memos</a>
+                <a class="nav-link" href="{% url 'polls:memo_create' %}">Memo생성</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">Link</a>

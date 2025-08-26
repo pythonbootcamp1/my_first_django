@@ -7,12 +7,6 @@ from .models import Article, Memo
 
 # index에서 context 만들어서 보내기기
 def index(request):
-    # memos = Memo.objects.all()
-    # context = {
-    #     "name":"lion",
-    #     "title":"장고 학습",
-    #     "memos":memos
-    # }
     return render(request=request,template_name="polls/index.html")
     
 # def blog_list(request):
@@ -67,17 +61,38 @@ def dubug_request(request):
 # 2시 40분까지 ORM 체험해 보겠습니다~!
 
 # 메모리스트를 보여주는 뷰를 만들어 보겠습니다.
-def memo_list(self):
+def memo_list(request):
     # 메모 전체 가져오기
-    all_memo=Memo.objects.all()
-    # content 구성하기
-    content=""
-    for memo in all_memo:
-        content += "제목 : "+memo.title+"<br>"
-        content += "내용 : "+memo.content+"<br>"
-        content += "----"*10
-        content += "<br>"
-    return HttpResponse(content)
+    memos=Memo.objects.all()
+    # # content 구성하기
+    # content=""
+    # for memo in all_memo:
+    #     content += "제목 : "+memo.title+"<br>"
+    #     content += "내용 : "+memo.content+"<br>"
+    #     content += "----"*10
+    #     content += "<br>"
+    context = {
+        "memos":memos
+    }
+    return render(request, 'polls/memo_list.html', context)
+
+def test1(request):
+    return render(request, 'polls/index.html')
+
+def test2(request):
+    return render(request,'polls/test2.html')
+
+def memo_create(request):
+    # step 1
+    # 고객이 입력할 수 있는 화면 보여주기
+    return render(request,'polls/memo_create.html')
+    # step 2
+    # 고객이 입력한 정보를 확인 -> 고객이 입력한 정보 어디있나?
+    # title, content
+    # Memo에 입력
+    # 다음 페이지로 보내기
+    pass
+    return
 
 # content = "제목 : 타이틀
 # 내용 : 콘텐트
