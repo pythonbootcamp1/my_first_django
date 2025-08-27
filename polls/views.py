@@ -2,7 +2,7 @@
 from django.http import HttpResponse
 
 # 장고 페이지 구성의 핵심
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from .models import Article, Memo
 
 # index에서 context 만들어서 보내기기
@@ -82,17 +82,42 @@ def test1(request):
 def test2(request):
     return render(request,'polls/test2.html')
 
+from .forms import MemoModelForm
 def memo_create(request):
-    # step 1
-    # 고객이 입력할 수 있는 화면 보여주기
-    return render(request,'polls/memo_create.html')
-    # step 2
-    # 고객이 입력한 정보를 확인 -> 고객이 입력한 정보 어디있나?
-    # title, content
-    # Memo에 입력
-    # 다음 페이지로 보내기
-    pass
-    return
+    if request.method=="POST":
+        # title = request.POST.get['title']
+        # form??
+        # return ??
+        form = MemoModelForm(request.POST)
+        if form.is_valid():
+            memo=form.save()
+            pk=memo.id
+            # 1. 메모리스트? list
+            # return redirect('polls:memo_list')
+            # 2. 지금 작성한 메모를 보여주기? detail
+            return redirect('polls:memo_detail',pk=pk)
+        # 1.form을 이용해서 저장하는 프로세스 체크
+        # 2.페이지 요청할때, 인자를 담아서 보내기
+        # 3. 과제 -> memo detail 페이지 기존에 하드코딩된 형태에서 template이용한 내용으로 변경하기기
+        # 9시 50분까지 진행해 보겠습니다!
+
+    else:
+        form = MemoModelForm()
+        return render(request, 'polls/memo_create.html', context={'form':form})
+    # # step 1
+    # # 고객이 입력할 수 있는 화면 보여주기
+    # if request.method=='GET':
+    #     return render(request,'polls/memo_create.html')
+    # # step 2
+    # # 고객이 입력한 정보를 확인 -> 고객이 입력한 정보 어디있나?
+    # # title, content
+    # # Memo에 입력
+    # # 다음 페이지로 보내기
+    # else:
+    #     title = request.POST.get('title','no_title') # request.POST['title']
+    #     content = request.POST.get('content','no content')
+    #     Memo.objects.create(title=title, content=content)
+    #     return redirect('polls:memo_list')       
 
 # content = "제목 : 타이틀
 # 내용 : 콘텐트
@@ -102,11 +127,34 @@ def memo_create(request):
 # 내용 : 콘텐트
 # " 줄바꿈 -> <br>
 
-def one_memo(request, memo_id):
-    memo = Memo.objects.get(id=memo_id)
-    content = f"""<h1>제목 : {memo.title}</h1> <br><br> 
-    내용 : {memo.content}<br>
-    {memo.is_important}<br>
-    {memo.created_at}
-    """
-    return HttpResponse(content)
+def memo_detail(request, pk):
+    # memo = Memo.objects.get(id=pk)
+    memo = get_object_or_404(Memo, pk=pk)
+    return render(request,'polls/memo_detail.html', {"memo":memo})
+    # content = f"""<h1>제목 : {memo.title}</h1> <br><br> 
+    # 내용 : {memo.content}<br>
+    # {memo.is_important}<br>
+    # {memo.created_at}
+    # """
+    # return HttpResponse(content)
+
+def memo_update(request, pk):
+    # 수정화면이 나와야지(get)
+    memo = get_object_or_404(Memo, pk=pk)
+
+    if request.method == 'GET':
+        # memo = Memo.objects.get(pk=pk)
+        form =MemoModelForm(instance=memo)
+        return render(request, 'polls/memo_create.html', {'form':form})
+    else:
+        form =MemoModelForm(request.POST ,instance=memo)
+        if form.is_valid():
+            form.save()
+            return redirect('polls:memo_detail',pk=pk)
+
+def memo_delete(request, pk):
+    memo = get_object_or_404(Memo, pk=pk)
+    if request.method=="POST":
+        memo.delete()
+        return redirect("polls:memo_list")
+    return render(request, 'polls/memo_confirm_delete.html',{"memo":memo})

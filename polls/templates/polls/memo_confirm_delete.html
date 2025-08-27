@@ -1,0 +1,17 @@
+<!-- memo_confirm_delete.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>메모 삭제</title>
+</head>
+<body>
+    <h1>메모 삭제 확인</h1>
+    <p>정말로 "{{ memo.title }}" 메모를 삭제하시겠습니까?</p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">삭제</button>
+        <a href="{% url 'polls:memo_detail' memo.pk %}">취소</a>
+    </form>
+</body>
+</html>
