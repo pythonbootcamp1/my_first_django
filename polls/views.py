@@ -158,3 +158,7 @@ def memo_delete(request, pk):
         memo.delete()
         return redirect("polls:memo_list")
     return render(request, 'polls/memo_confirm_delete.html',{"memo":memo})
+
+# 1. CRUD
+# 2. Update Delete에 해당하는 뷰, 템플릿 구성
+# 3. 각 템플릿에 base.html 적용

@@ -52,10 +52,16 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
+# 1. 프로젝트 루트에 templates 라는 폴더 생성
+# 2. templates폴더에 common 이라는 폴더 생성해서 이 안에 base.html을 이동
+# 3. settings.py에 추가 ->  'DIRS': [BASE_DIR / 'templates']
+# 4. polls에서 extends(상속 부분) 경로를 변경 polls/base.html -> common/base.html
+# 동작 확인(1시 50분까지)
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'my_templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -116,6 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / 'my_static',
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
