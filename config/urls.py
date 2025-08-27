@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('polls.urls')),
+    path('accounts/',include('accounts.urls'))
 ]
 # 우리들의서버주소/polls

@@ -33,8 +33,21 @@ class Article(models.Model):
 # 실제 DB에 반영 : python manage.py migrate
 
 # 여러분의 DB에 테이블을 생성해 보겠습니다!
+from django.contrib.auth.models import User
 
+# author 추가
+# 디버그에서 view에 index에서 브레이크 포인트로 멈추기
+# 디버그 콘솔에서 Memo 내용을 조회
+# from django.contrib.auth.models import User
+# user = User.objects.get(pk=1)
+# user.memos.all()
 class Memo(models.Model):
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='memos',
+        verbose_name='작성자'
+    )
     title = models.CharField('제목', max_length=100)
     content = models.TextField('내용')
     is_important = models.BooleanField('중요', default=False)
