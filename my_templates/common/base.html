@@ -28,6 +28,9 @@
                 <a class="nav-link" href="{% url 'polls:memo_list' %}">Memo목록</a>
               </li>
               <li class="nav-item">
+                <a class="nav-link" href="{% url 'polls:my_memo_list' %}">내 메모 Memo목록</a>
+              </li>
+              <li class="nav-item">
                 <a class="nav-link" href="{% url 'polls:memo_create' %}">Memo생성</a>
               </li>
               {% if user.is_authenticated %}
