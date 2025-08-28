@@ -137,15 +137,12 @@ LOGIN_URL='/accounts/login/'
 LOGIN_REDIRECT_URL='/'
 LOGOUT_REDIRECT_URL='/'
 
-MEDIA_URL="/media/"
-MEDIA_ROOT=BASE_DIR/'media'
-LIKELION=900
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / 'media'
+LIKELION = 900
 
-dev2=888
+dev2 = 888
 # 개발자1은 accounts 담당
 dev1=123
 common_val=99999
 # 개발자2는 photo_gallery 담당
-
-
-# 
