@@ -1,0 +1,201 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container-fluid bg-light min-vh-100">
+    <!-- 헤더 섹션 -->
+    <div class="row justify-content-center py-4">
+        <div class="col-md-8">
+            <div class="text-center">
+                <h1 class="display-6 fw-bold text-dark mb-2">{{ title|default:"Daily Snap 갤러리" }}</h1>
+                <p class="text-muted">매일의 순간을 사진으로 기록합니다</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 카테고리 필터 -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                <a href="{% url 'photo_gallery:photo_list' %}" class="btn btn-outline-primary btn-sm rounded-pill">전체</a>
+                {% for value, label in categories %}
+                    <a href="?category={{ value }}" class="btn btn-outline-secondary btn-sm rounded-pill">{{ label }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- 사진 그리드 -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            {% if page_obj %}
+                <div class="row g-3">
+                    {% for photo in page_obj %}
+                    <div class="col-md-4 col-sm-6">
+                        <div class="card shadow-sm border-0 rounded-3 overflow-hidden h-100">
+                            <!-- 사진 이미지 -->
+                            <div class="position-relative">
+                                <a href="{% url 'photo_gallery:photo_detail' photo.pk %}">
+                                    {% if photo.thumbnail %}
+                                        <img src="{{ photo.thumbnail.url }}" alt="{{ photo.title }}" 
+                                             class="card-img-top" style="height: 250px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{{ photo.photo.url }}" alt="{{ photo.title }}" 
+                                             class="card-img-top" style="height: 250px; object-fit: cover;">
+                                    {% endif %}
+                                </a>
+                                <!-- 좋아요 버튼 오버레이 -->
+                                <div class="position-absolute top-0 end-0 p-2">
+                                    <button class="btn btn-light btn-sm rounded-circle shadow-sm" 
+                                            style="width: 35px; height: 35px;">
+                                        <i class="bi bi-heart-fill text-danger"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 카드 내용 -->
+                            <div class="card-body p-3">
+                                <h6 class="card-title fw-bold mb-2 text-truncate">{{ photo.title }}</h6>
+                                
+                                <!-- 작성자 정보 -->
+                                <div class="d-flex align-items-center mb-2">
+                                    <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                         style="width: 24px; height: 24px;">
+                                        <span class="text-white small fw-bold">{{ photo.author.username|first|upper }}</span>
+                                    </div>
+                                    <small class="text-muted">{{ photo.author.username }}</small>
+                                </div>
+                                
+                                <!-- 좋아요 수와 날짜 -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-heart-fill text-danger me-1"></i>
+                                        <small class="text-muted">{{ photo.like_count }}</small>
+                                    </div>
+                                    <small class="text-muted">{{ photo.photo_date|date:"M d" }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- 빈 상태 -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="bi bi-camera display-1 text-muted"></i>
+                    </div>
+                    <h5 class="text-muted mb-3">아직 사진이 없습니다</h5>
+                    <p class="text-muted mb-4">첫 번째 사진을 업로드해보세요!</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'photo_gallery:photo_create' %}" class="btn btn-primary rounded-pill px-4">
+                            <i class="bi bi-plus-circle me-2"></i>사진 업로드
+                        </a>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}" class="btn btn-primary rounded-pill px-4">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>로그인하기
+                        </a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 페이지네이션 -->
+    {% if page_obj.has_other_pages %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <nav aria-label="사진 페이지네이션">
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1" aria-label="처음">
+                                <i class="bi bi-chevron-double-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="이전">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="다음">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="마지막">
+                                <i class="bi bi-chevron-double-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- 인스타그램 스타일 커스텀 CSS -->
+<style>
+.card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.card-img-top {
+    transition: filter 0.2s ease-in-out;
+}
+
+.card:hover .card-img-top {
+    filter: brightness(1.05);
+}
+
+.btn-outline-primary {
+    border-color: #007bff;
+    color: #007bff;
+}
+
+.btn-outline-primary:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d;
+    color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.pagination .page-link {
+    border: none;
+    color: #007bff;
+    margin: 0 2px;
+    border-radius: 8px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.pagination .page-link:hover {
+    background-color: #e9ecef;
+    color: #007bff;
+}
+</style>
+{% endblock %}

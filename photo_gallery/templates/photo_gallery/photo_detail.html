@@ -1,0 +1,188 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container-fluid bg-light min-vh-100 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- 뒤로가기 버튼 -->
+            <div class="mb-4">
+                <a href="{% url 'photo_gallery:photo_list' %}" class="btn btn-outline-secondary rounded-pill">
+                    <i class="bi bi-arrow-left me-2"></i>갤러리로 돌아가기
+                </a>
+            </div>
+
+            <!-- 메인 카드 -->
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+                <!-- 사진 헤더 -->
+                <div class="card-header bg-white border-0 py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 40px; height: 40px;">
+                                <span class="text-white fw-bold">{{ photo.author.username|first|upper }}</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">{{ photo.author.username }}</h6>
+                                <small class="text-muted">{{ photo.photo_date|date:"M d, Y" }}</small>
+                            </div>
+                        </div>
+                        
+                        <!-- 작성자만 수정/삭제 -->
+                        {% if user == photo.author %}
+                        <div class="dropdown">
+                            <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-three-dots fs-5"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'photo_gallery:photo_update' photo.pk %}">
+                                    <i class="bi bi-pencil me-2"></i>수정
+                                </a></li>
+                                <li><a class="dropdown-item text-danger" href="{% url 'photo_gallery:photo_delete' photo.pk %}">
+                                    <i class="bi bi-trash me-2"></i>삭제
+                                </a></li>
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 사진 이미지 -->
+                <div class="position-relative">
+                    <img src="{{ photo.photo.url }}" alt="{{ photo.title }}" 
+                         class="w-100" style="max-height: 600px; object-fit: cover;">
+                    
+                    <!-- 이전/다음 네비게이션 -->
+                    <div class="position-absolute top-50 start-0 translate-middle-y">
+                        {% if prev_photo %}
+                            <a href="{% url 'photo_gallery:photo_detail' prev_photo.pk %}" 
+                               class="btn btn-light btn-sm rounded-circle shadow-sm ms-2">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                    <div class="position-absolute top-50 end-0 translate-middle-y">
+                        {% if next_photo %}
+                            <a href="{% url 'photo_gallery:photo_detail' next_photo.pk %}" 
+                               class="btn btn-light btn-sm rounded-circle shadow-sm me-2">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- 액션 버튼들 -->
+                <div class="card-body border-0 py-3">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <!-- 좋아요 버튼 -->
+                            {% if user.is_authenticated %}
+                                <form method="post" action="{% url 'photo_gallery:photo_like' photo.pk %}" class="d-inline">
+                                    {% csrf_token %}
+                                    {% if user_liked %}
+                                        <button type="submit" class="btn btn-link text-danger p-0 border-0">
+                                            <i class="bi bi-heart-fill fs-4"></i>
+                                        </button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-link text-dark p-0 border-0">
+                                            <i class="bi bi-heart fs-4"></i>
+                                        </button>
+                                    {% endif %}
+                                </form>
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}" class="btn btn-link text-dark p-0 border-0">
+                                    <i class="bi bi-heart fs-4"></i>
+                                </a>
+                            {% endif %}
+
+                            <!-- 댓글 버튼 (향후 기능 확장용) -->
+                            <button class="btn btn-link text-dark p-0 border-0">
+                                <i class="bi bi-chat fs-4"></i>
+                            </button>
+
+                            <!-- 공유 버튼 -->
+                            <button class="btn btn-link text-dark p-0 border-0">
+                                <i class="bi bi-share fs-4"></i>
+                            </button>
+                        </div>
+
+                        <!-- 북마크 버튼 -->
+                        <button class="btn btn-link text-dark p-0 border-0">
+                            <i class="bi bi-bookmark fs-4"></i>
+                        </button>
+                    </div>
+
+                    <!-- 좋아요 수 -->
+                    <div class="mb-3">
+                        <span class="fw-bold">{{ like_count }}명이 좋아합니다</span>
+                    </div>
+
+                    <!-- 사진 제목과 설명 -->
+                    <div class="mb-3">
+                        <h5 class="fw-bold mb-2">{{ photo.title }}</h5>
+                        {% if photo.description %}
+                            <p class="text-muted mb-0">{{ photo.description|linebreaks }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- 사진 정보 -->
+                    <div class="d-flex flex-wrap gap-3 mb-3">
+                        <span class="badge bg-light text-dark rounded-pill">
+                            <i class="bi bi-tag me-1"></i>{{ photo.get_category_display }}
+                        </span>
+                        {% if photo.is_public %}
+                            <span class="badge bg-success rounded-pill">
+                                <i class="bi bi-globe me-1"></i>공개
+                            </span>
+                        {% else %}
+                            <span class="badge bg-secondary rounded-pill">
+                                <i class="bi bi-lock me-1"></i>비공개
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- 로그인 안내 -->
+                    {% if not user.is_authenticated %}
+                        <div class="alert alert-info border-0 rounded-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <a href="{% url 'accounts:login' %}" class="alert-link">로그인</a>하면 좋아요를 누를 수 있습니다.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 인스타그램 스타일 커스텀 CSS -->
+<style>
+.card {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.btn-link:hover {
+    opacity: 0.7;
+}
+
+.badge {
+    font-size: 0.8rem;
+}
+
+.alert {
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+}
+
+.alert-link {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.alert-link:hover {
+    text-decoration: underline;
+}
+</style>
+{% endblock %}
