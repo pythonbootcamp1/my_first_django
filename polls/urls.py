@@ -14,6 +14,7 @@ app_name = 'polls'
 urlpatterns = [   
     path('',index, name='index'),
     path('memo/', memo_list, name='memo_list'),
+    path('memo/mine/',views.my_memo_list,name="my_memo_list"),
     path('memo/<int:pk>/', memo_detail, name='memo_detail'),
     path('memo/create/',memo_create, name='memo_create'),
     path('test1/', test1, name='test1'),

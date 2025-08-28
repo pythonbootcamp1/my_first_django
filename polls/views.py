@@ -86,6 +86,12 @@ def test2(request):
 from .forms import MemoModelForm
 from django.contrib.auth.decorators import login_required
 
+# update와 delete 기능을 개발해 보겠습니다!!
+# 그냥 개발 시작해 보시고
+# 막히는 부분 있으면 교안 또는 직원 참고해서 완성해 보겠습니다!
+# 10:50 까지 하겠습니다!
+
+
 @login_required
 def memo_create(request):
     if request.method=="POST":
@@ -136,6 +142,17 @@ def memo_create(request):
 # 제목 : 타이틀
 # 내용 : 콘텐트
 # " 줄바꿈 -> <br>
+@login_required
+def my_memo_list(request):
+
+    # memos=Memo.objects.filter(author=request.user)
+    memos = request.user.memos.all()
+
+    context = {
+        "memos":memos
+    }
+    return render(request, 'polls/my_memo_list.html', context)
+
 
 def memo_detail(request, pk):
     # memo = Memo.objects.get(id=pk)
@@ -147,28 +164,47 @@ def memo_detail(request, pk):
     # {memo.created_at}
     # """
     # return HttpResponse(content)
-
+from django.contrib import messages
+@login_required
 def memo_update(request, pk):
-    # 수정화면이 나와야지(get)
+    """메모 수정 - 작성자만 가능"""
     memo = get_object_or_404(Memo, pk=pk)
 
-    if request.method == 'GET':
-        # memo = Memo.objects.get(pk=pk)
-        form =MemoModelForm(instance=memo)
-        return render(request, 'polls/memo_create.html', {'form':form})
-    else:
-        form =MemoModelForm(request.POST ,instance=memo)
+    # 작성자 확인
+    if memo.author != request.user:
+        messages.error(request, '자신의 메모만 수정할 수 있습니다.')
+        return redirect('polls:memo_detail', pk=pk)
+
+    if request.method == 'POST':
+        form = MemoModelForm(request.POST, instance=memo)
         if form.is_valid():
             form.save()
-            return redirect('polls:memo_detail',pk=pk)
+            messages.success(request, '메모가 수정되었습니다.')
+            return redirect('polls:memo_detail', pk=pk)
+    else:
+        form = MemoModelForm(instance=memo)
 
+    return render(request, 'polls/memo_form.html', {
+        'form': form,
+        'is_update': True
+    })
+
+from django.core.exceptions import PermissionDenied
+@login_required
 def memo_delete(request, pk):
+    """메모 삭제 - 작성자만 가능"""
     memo = get_object_or_404(Memo, pk=pk)
-    if request.method=="POST":
-        memo.delete()
-        return redirect("polls:memo_list")
-    return render(request, 'polls/memo_confirm_delete.html',{"memo":memo})
 
+    # 작성자 확인
+    if memo.author != request.user:
+        raise PermissionDenied('삭제 권한이 없습니다.')
+
+    if request.method == 'POST':
+        memo.delete()
+        messages.success(request, '메모가 삭제되었습니다.')
+        return redirect('polls:memo_list')
+
+    return render(request, 'polls/memo_confirm_delete.html', {'memo': memo})
 # 1. CRUD
 # 2. Update Delete에 해당하는 뷰, 템플릿 구성
 # 3. 각 템플릿에 base.html 적용

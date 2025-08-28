@@ -1,0 +1,45 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 900px;">
+    <h1 class="mb-4 fw-bold" style="color: #7c3aed;">나의 메모 목록</h1>
+    {% if memos %}
+        <div class="row">
+        {% for memo in memos %}
+            <div class="col-md-6 mb-4">
+                <div class="card shadow border-0" style="border-left: 6px solid #7c3aed;">
+                    <div class="card-header text-white fw-bold" style="background: #7c3aed;">
+                        {{ memo.title }}
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">ID: {{ memo.id }}</h6>
+                        <p class="card-text">{{ memo.content }}</p>
+                        <a href="{% url 'polls:memo_detail' memo.id %}" class="btn btn-sm text-white" style="background: #7c3aed;">
+                            상세 보기
+                        </a>
+                    </div>
+                    <div class="card-footer text-end" style="background: #ede9fe;">
+                        <small class="text-muted">{{ memo.created_at|date:"Y-m-d H:i" }}</small>
+                        {% if memo.is_important %}
+                            <span class="badge rounded-pill text-bg-warning ms-2">중요</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert text-white" style="background: #7c3aed;" role="alert">
+            메모가 없습니다.
+        </div>
+    {% endif %}
+</div>
+<style>
+    .border-violet {
+        border-color: #7c3aed !important;
+    }
+    .bg-violet {
+        background: #7c3aed !important;
+    }
+</style>
+{% endblock %}

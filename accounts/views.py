@@ -20,6 +20,7 @@ def login_view(request): # request.user
             return redirect('polls:index')
         else:
             messages.error(request,"아이디나 패스워드가 올바르지 않습니다.")
+            return redirect('accounts:login')
     else:
         return render(request, 'accounts/login.html')
 

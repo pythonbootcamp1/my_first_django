@@ -1,0 +1,140 @@
+{% extends 'common/base.html' %}
+
+{% block content %}
+<div class="container-fluid bg-light min-vh-100 py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-7">
+            <!-- 헤더 -->
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                </div>
+                <h2 class="fw-bold text-dark mb-2">사진 삭제 확인</h2>
+                <p class="text-muted">정말로 이 사진을 삭제하시겠습니까?</p>
+            </div>
+
+            <!-- 삭제할 사진 정보 -->
+            <div class="card shadow-sm border-0 rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <img src="{{ photo.thumbnail.url|default:photo.photo.url }}" 
+                             alt="{{ photo.title }}" 
+                             class="img-fluid rounded-3 mb-3" 
+                             style="max-height: 300px; object-fit: cover;">
+                        <h5 class="fw-bold mb-2">{{ photo.title }}</h5>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-calendar me-1"></i>
+                            {{ photo.photo_date|date:"M d, Y" }}
+                        </p>
+                    </div>
+
+                    <!-- 경고 메시지 -->
+                    <div class="alert alert-warning border-0 rounded-3 mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-exclamation-triangle-fill me-3 fs-4"></i>
+                            <div>
+                                <h6 class="alert-heading fw-bold mb-1">삭제 주의사항</h6>
+                                <p class="mb-0 small">삭제된 사진은 복구할 수 없습니다. 신중하게 결정해주세요.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 사진 정보 요약 -->
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <div class="border-end">
+                                <div class="fw-bold text-primary">{{ photo.like_count }}</div>
+                                <small class="text-muted">좋아요</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="border-end">
+                                <div class="fw-bold text-primary">{{ photo.get_category_display }}</div>
+                                <small class="text-muted">카테고리</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div>
+                                <div class="fw-bold text-primary">
+                                    {% if photo.is_public %}
+                                        <i class="bi bi-globe text-success"></i>
+                                    {% else %}
+                                        <i class="bi bi-lock text-secondary"></i>
+                                    {% endif %}
+                                </div>
+                                <small class="text-muted">
+                                    {% if photo.is_public %}공개{% else %}비공개{% endif %}
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 버튼 영역 -->
+                    <form method="post" class="d-flex gap-3 justify-content-center">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger rounded-pill px-4">
+                            <i class="bi bi-trash me-2"></i>삭제하기
+                        </button>
+                        <a href="{% url 'photo_gallery:photo_detail' photo.pk %}" 
+                           class="btn btn-outline-secondary rounded-pill px-4">
+                            <i class="bi bi-x-circle me-2"></i>취소
+                        </a>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 추가 안내 -->
+            <div class="text-center">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    삭제 후에는 갤러리로 자동 이동됩니다
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 인스타그램 스타일 커스텀 CSS -->
+<style>
+.card {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.alert {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
+}
+
+.border-end {
+    border-right: 1px solid #dee2e6 !important;
+}
+
+@media (max-width: 576px) {
+    .border-end {
+        border-right: none !important;
+        border-bottom: 1px solid #dee2e6 !important;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+}
+</style>
+{% endblock %}
