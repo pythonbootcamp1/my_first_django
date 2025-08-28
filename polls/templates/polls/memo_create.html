@@ -3,6 +3,7 @@
 <form action="" method="post">
     {% csrf_token %}
     {{form.as_p}}
+    <input type="hidden" name="author" value="{{user.id}}">
     <button type="submit">저장</button>
 </form>
 {% endblock %}

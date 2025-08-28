@@ -1,4 +1,5 @@
 # polls/views.py에 간단한 뷰 작성
+from django.contrib.auth.forms import User
 from django.http import HttpResponse
 
 # 장고 페이지 구성의 핵심
@@ -94,8 +95,9 @@ def memo_create(request):
         form = MemoModelForm(request.POST)
         if form.is_valid():
             # 직접 입력되지 않는 정보(ex- user)를 추가 입력할때는 form.save(commit=False)를 사용한다!
-            memo=form.save(commit=False)
-            memo.author = request.user
+            user= User.objects.get(pk=request.POST['author'])
+            memo=form.save(commit=False)            
+            memo.author=user
             memo.save()
             # 
             #-------------------------------------------------
