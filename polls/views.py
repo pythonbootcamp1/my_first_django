@@ -83,6 +83,9 @@ def test2(request):
     return render(request,'polls/test2.html')
 
 from .forms import MemoModelForm
+from django.contrib.auth.decorators import login_required
+
+@login_required
 def memo_create(request):
     if request.method=="POST":
         # title = request.POST.get['title']
@@ -90,12 +93,17 @@ def memo_create(request):
         # return ??
         form = MemoModelForm(request.POST)
         if form.is_valid():
-            memo=form.save()
-            pk=memo.id
+            # 직접 입력되지 않는 정보(ex- user)를 추가 입력할때는 form.save(commit=False)를 사용한다!
+            memo=form.save(commit=False)
+            memo.author = request.user
+            memo.save()
+            # 
+            #-------------------------------------------------
             # 1. 메모리스트? list
             # return redirect('polls:memo_list')
             # 2. 지금 작성한 메모를 보여주기? detail
-            return redirect('polls:memo_detail',pk=pk)
+            #-------------------------------------------------
+            return redirect('polls:memo_detail',pk=memo.id)
         # 1.form을 이용해서 저장하는 프로세스 체크
         # 2.페이지 요청할때, 인자를 담아서 보내기
         # 3. 과제 -> memo detail 페이지 기존에 하드코딩된 형태에서 template이용한 내용으로 변경하기기
