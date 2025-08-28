@@ -141,3 +141,5 @@ MEDIA_URL="/media/"
 MEDIA_ROOT=BASE_DIR/'media'
 LIKELION=900
 
+dev2=888
+common_val=12345
