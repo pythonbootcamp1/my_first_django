@@ -137,3 +137,7 @@ LOGIN_REDIRECT_URL='/'
 LOGOUT_REDIRECT_URL='/'
 
 LIKELION=900
+# 개발자1은 accounts 담당
+dev1=123
+common_val=99999
+# 개발자2는 photo_gallery 담당
