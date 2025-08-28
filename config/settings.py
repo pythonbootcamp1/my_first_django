@@ -142,4 +142,10 @@ MEDIA_ROOT=BASE_DIR/'media'
 LIKELION=900
 
 dev2=888
-common_val=12345
+# 개발자1은 accounts 담당
+dev1=123
+common_val=99999
+# 개발자2는 photo_gallery 담당
+
+
+# 
