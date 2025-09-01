@@ -8,11 +8,6 @@
     <h1>로그인</h1>
 
     <!-- 메시지 표시 -->
-    {% if messages %}
-        {% for message in messages %}
-            <div>{{ message }}</div>
-        {% endfor %}
-    {% endif %}
 
     <form method="post">
         {% csrf_token %}

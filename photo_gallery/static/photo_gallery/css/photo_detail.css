@@ -1,0 +1,30 @@
+
+.card {
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.btn-link:hover {
+    opacity: 0.7;
+}
+
+.badge {
+    font-size: 0.8rem;
+}
+
+.alert {
+    background-color: #f8f9fa;
+    border-left: 4px solid #007bff;
+}
+
+.alert-link {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.alert-link:hover {
+    text-decoration: underline;
+}

@@ -43,6 +43,7 @@ def photo_list(request):
     return render(request, 'photo_gallery/photo_list.html', context)
 
 
+@login_required
 def photo_detail(request, pk):
     """사진 상세보기"""
     photo = get_object_or_404(DailyPhoto, pk=pk)
@@ -178,7 +179,6 @@ def my_photos(request):
     }
     return render(request, 'photo_gallery/photo_list.html', context)
 
-
 @login_required
 @require_POST
 def photo_like_ajax(request, pk):
@@ -206,10 +206,17 @@ def photo_like_ajax(request, pk):
             'like_count': like_count,
             'message': message
         }
-    ) 
+    )
 
 # photo_like_ajax를 개발해 보겠습니다!
 # url, 더미 view를 구성하기
 # view 내용 채우기 + 브라우저로 테스트
 # 마지막에 login, post 요구사항 반영해서 마무리
 # 11:30까지!
+
+
+
+
+
+# 포토 갤러리 페이지에 ajax를 이용해서 좋아요가 표시되도록 해보겠습니다
+# 1:35까지 진행해 보겠습니다!
