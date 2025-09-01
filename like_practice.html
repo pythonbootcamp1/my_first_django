@@ -1,0 +1,57 @@
+<!-- like_practice.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>좋아요 연습</title>
+</head>
+<body>
+    <h1>JavaScript 좋아요 버튼 (Ajax 없이)</h1>
+
+    <div>
+        <img src="https://media.istockphoto.com/id/1267485165/ko/%EB%B2%A1%ED%84%B0/9%EC%9B%94-%ED%85%8D%EC%8A%A4%ED%8A%B8%EC%9E%85%EB%8B%88%EB%8B%A4-%EB%AC%B8%EC%9E%90-%ED%83%80%EC%9D%B4%ED%8F%AC%EA%B7%B8%EB%9E%98%ED%94%BC-%EB%B2%A1%ED%84%B0-%EC%9D%BC%EB%9F%AC%EC%8A%A4%ED%8A%B8%EB%A0%88%EC%9D%B4%EC%85%98%EC%9D%84-%ED%8F%AC%EC%8A%A4%ED%84%B0-%EC%97%BD%EC%84%9C-%EC%9D%B8%EC%82%AC%EB%A7%90-%EC%B9%B4%EB%93%9C-%EC%B4%88%EB%8C%80-%ED%85%9C%ED%94%8C%EB%A6%BF%EC%9C%BC%EB%A1%9C-%ED%91%9C%EC%8B%9C%EB%90%A9%EB%8B%88%EB%8B%A4-%EC%BB%A8%EC%85%89-9%EC%9B%94-%EA%B4%91%EA%B3%A0.jpg?s=612x612&w=0&k=20&c=ixSrk346kAigKCp-XAPl7gjmVxI3Uzj8dsJLmWfq1RE=" alt="샘플" width="300">
+        <br>
+        <button id="likeBtn">🤍 좋아요</button>
+        <span id="likeCount">0</span>명이 좋아합니다
+    </div>
+
+    <script>
+        // JavaScript 영역
+        // 1. HTML 요소 가져오기
+        const likeBtn = document.getElementById('likeBtn');
+        const likeCount = document.getElementById('likeCount');
+
+        // 2. 변수로 상태 관리
+        let isLiked = false;
+        let count = 0;
+
+        // 3. 클릭 이벤트 처리
+        likeBtn.addEventListener('click', function() {
+            // 좋아요 상태 토글
+            if (isLiked) {
+                // 좋아요 취소
+                isLiked = false;
+                count--;
+                likeBtn.textContent = '🤍 좋아요';
+            } else {
+                // 좋아요
+                isLiked = true;
+                count++;
+                likeBtn.textContent = '❤️ 좋아요';
+            }
+
+            // 화면 업데이트
+            likeCount.textContent = count;
+        });
+    </script>
+    <!-- 
+     1. like_practice.html 을 아무데나 만듭니다
+     2. 교안의 내용을 복사해서 넣습니다
+     3. 각 요소의 이름을 바꿔서 js가 요소를 인식하는 방식을 경험
+     4. 어떻게 흘러가는지 파악
+
+     10:25까지 진행해 보겠습니다!
+     
+    -->
+
+</body>
+</html>

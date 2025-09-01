@@ -1,6 +1,8 @@
 # photo_gallery/views.py
+from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.db.models import Q, Count
@@ -175,3 +177,39 @@ def my_photos(request):
         'title': '내 사진',
     }
     return render(request, 'photo_gallery/photo_list.html', context)
+
+
+@login_required
+@require_POST
+def photo_like_ajax(request, pk):
+    # post방식일때    
+    # 어떤 게시물인지 가져와서
+    photo = get_object_or_404(DailyPhoto,pk=pk)
+    # 현재 좋아요 버튼 누른 유저 확인
+    user = request.user
+    # 이 사람이 이전에 좋아요를 했으면 또는 안했으면 반대로 바뀌게
+    # 이전에 좋아요를 했으면
+    if user in photo.likes.all():
+        photo.likes.remove(user)
+        liked = False
+        message = "좋아요를 취소했습니다!"
+    else:
+        photo.likes.add(user)
+        liked = True
+        message = "좋아요를 눌렀습니다!"
+    # 이 게시물의 좋아요 숫자를 찾기
+    like_count = photo.likes.count()
+    # json으로 응답하기
+    return JsonResponse(
+        {
+            'liked': liked,
+            'like_count': like_count,
+            'message': message
+        }
+    ) 
+
+# photo_like_ajax를 개발해 보겠습니다!
+# url, 더미 view를 구성하기
+# view 내용 채우기 + 브라우저로 테스트
+# 마지막에 login, post 요구사항 반영해서 마무리
+# 11:30까지!
