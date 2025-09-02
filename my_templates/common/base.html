@@ -355,8 +355,10 @@
 
             <!-- 검색 바 (데스크톱) -->
             <div class="search-container d-none d-lg-block mx-auto">
-                <i class="bi bi-search search-icon"></i>
-                <input type="search" class="form-control search-input" placeholder="검색" aria-label="Search">
+                <form action="{% url 'polls:memo_search' %}" method="get">
+                    <i class="bi bi-search search-icon"></i>
+                    <input type="search" class="form-control search-input" placeholder="메모 검색" aria-label="Search" name="q">
+                </form>
             </div>
 
             <!-- 네비게이션 메뉴 -->

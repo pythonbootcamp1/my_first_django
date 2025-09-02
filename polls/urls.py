@@ -20,7 +20,8 @@ urlpatterns = [
     path('test1/', test1, name='test1'),
     path('test2/',test2,name='test2'),
     path('memo/update/<int:pk>/', views.memo_update, name='memo_update'),
-    path('memo/delete/<int:pk>/', views.memo_delete, name='memo_delete')
+    path('memo/delete/<int:pk>/', views.memo_delete, name='memo_delete'),
+    path('memo/search/', views.memo_search, name="memo_search")
     # path('tiger/<str:name>/', lion),
     # path('', index),
     # path('bad/', blog_list),

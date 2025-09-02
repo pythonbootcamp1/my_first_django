@@ -208,3 +208,17 @@ def memo_delete(request, pk):
 # 1. CRUD
 # 2. Update Delete에 해당하는 뷰, 템플릿 구성
 # 3. 각 템플릿에 base.html 적용
+
+from django.db.models import Q
+def memo_search(request):
+    # base.url의 검색 영역을 form으로 감싸기
+    # polls urls.py에 검색 url 추가
+    # views에 memo_search 작성 준비
+    query = request.GET.get('q',"")
+    memos = Memo.objects.filter(
+        Q(title__icontains=query) | Q(content__icontains=query)
+    )
+    context = {
+        "memos":memos
+    }
+    return render(request, 'polls/my_memo_list.html', context)
