@@ -411,7 +411,64 @@
 {% endblock %}
 
 {% block extra_js %}
-    {% if user.is_authenticated %}
-    <script src="{% static 'photo_gallery/js/photo_detail.js' %}"></script>
-    {% endif %}
+{% if user.is_authenticated %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const likeBtn = document.getElementById('likeBtn');
+    const likeCount = document.getElementById('likeCount');
+
+    if (likeBtn) {
+        likeBtn.addEventListener('click', function() {
+            const photoId = this.dataset.photoId;
+            const isLiked = this.dataset.liked === 'true';
+
+            // CSRF 토큰 가져오기
+            const csrftoken = getCookie('csrftoken');
+
+            // Axios 요청
+            axios.post(`/photo/${photoId}/like_ajax/`, {}, {
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => {
+                const data = response.data;
+
+                // 좋아요 수 업데이트
+                likeCount.textContent = data.like_count;
+
+                // 버튼 텍스트 변경
+                if (data.liked) {
+                    likeBtn.textContent = '❤️ 좋아요 취소';
+                    likeBtn.dataset.liked = 'true';
+                } else {
+                    likeBtn.textContent = '🤍 좋아요';
+                    likeBtn.dataset.liked = 'false';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('오류가 발생했습니다.');
+            });
+        });
+    }
+
+    // CSRF 토큰 가져오는 함수
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endif %}
 {% endblock %}
