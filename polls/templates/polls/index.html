@@ -1,5 +1,405 @@
 {% extends 'common/base.html' %}
 
+{% block title %}Daily Snap - 매일의 순간을 기록하세요{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: white;
+        padding: 3rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%" height="100%" fill="url(%23grid)" /></svg>');
+        animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+        0% {
+            transform: translate(0, 0);
+        }
+        100% {
+            transform: translate(100px, 100px);
+        }
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 1;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 2rem;
+    }
+
+    .hero-logo {
+        font-size: 5rem;
+        margin-bottom: 1.5rem;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        line-height: 1.2;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        font-weight: 300;
+        margin-bottom: 2.5rem;
+        opacity: 0.95;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-hero {
+        padding: 1rem 2.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-hero-primary {
+        background: white;
+        color: #667eea;
+        border: 2px solid white;
+    }
+
+    .btn-hero-primary:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        color: #667eea;
+    }
+
+    .btn-hero-secondary {
+        background: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .btn-hero-secondary:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        color: white;
+    }
+
+    .features-section {
+        padding: 5rem 0;
+        background: #f8f9fa;
+    }
+
+    .section-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        margin-bottom: 4rem;
+    }
+
+    .feature-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        height: 100%;
+        border: 2px solid transparent;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+        border-color: #667eea;
+    }
+
+    .feature-icon {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+    }
+
+    .feature-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .feature-description {
+        color: #7f8c8d;
+        line-height: 1.7;
+        font-size: 1rem;
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 5rem 0;
+        color: white;
+        text-align: center;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    .cta-text {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+    }
+
+    .stats-section {
+        background: white;
+        padding: 3rem 0;
+        border-top: 1px solid #e9ecef;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 1rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #667eea;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+        color: #7f8c8d;
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .hero-title {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .hero-logo {
+            font-size: 3.5rem;
+        }
+
+        .btn-hero {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .feature-card {
+            margin-bottom: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<img src="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcRvbEOG2k2LPoZdHP7tN2q1IrNRgtPn26I5TU7kBvlw_7FgWpmQQ3o3pI9HTaY-pEOTsNqSjyg2kCFEg6evEGwUKg">
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-logo">📸</div>
+        <h1 class="hero-title">Daily Snap</h1>
+        <p class="hero-subtitle">매일의 소중한 순간을 사진으로 기록하고 공유하세요</p>
+        <div class="hero-buttons">
+            {% if user.is_authenticated %}
+                <a href="{% url 'photo_gallery:photo_create' %}" class="btn-hero btn-hero-primary">
+                    <i class="bi bi-plus-circle"></i> 사진 업로드
+                </a>
+                <a href="{% url 'photo_gallery:photo_list' %}" class="btn-hero btn-hero-secondary">
+                    <i class="bi bi-grid-3x3-gap"></i> 갤러리 보기
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:signup' %}" class="btn-hero btn-hero-primary">
+                    <i class="bi bi-person-plus"></i> 시작하기
+                </a>
+                <a href="{% url 'accounts:login' %}" class="btn-hero btn-hero-secondary">
+                    <i class="bi bi-box-arrow-in-right"></i> 로그인
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">공유된 사진</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">활동 중인 사용자</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">저장된 순간</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">왜 Daily Snap일까요?</h2>
+        <p class="section-subtitle">당신의 일상을 특별하게 만드는 기능들</p>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📷</div>
+                    <h3 class="feature-title">간편한 업로드</h3>
+                    <p class="feature-description">
+                        클릭 한 번으로 사진을 업로드하고 카테고리별로 분류하세요.
+                        모바일, 데스크톱 모두 지원합니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📝</div>
+                    <h3 class="feature-title">메모 작성</h3>
+                    <p class="feature-description">
+                        사진과 함께 메모를 남겨 순간의 감정과 생각을 기록하세요.
+                        검색 기능으로 언제든 찾을 수 있습니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">❤️</div>
+                    <h3 class="feature-title">소셜 기능</h3>
+                    <p class="feature-description">
+                        다른 사용자들과 사진을 공유하고 좋아요를 눌러
+                        소통하세요. 커뮤니티와 함께 성장합니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">카테고리 정리</h3>
+                    <p class="feature-description">
+                        풍경, 인물, 음식 등 다양한 카테고리로 사진을
+                        체계적으로 관리하세요.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3 class="feature-title">안전한 보관</h3>
+                    <p class="feature-description">
+                        소중한 추억을 안전하게 보관합니다.
+                        언제 어디서나 접근할 수 있습니다.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">반응형 디자인</h3>
+                    <p class="feature-description">
+                        모든 기기에서 최적화된 경험을 제공합니다.
+                        PC, 태블릿, 모바일 모두 완벽하게 지원합니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="cta-title">지금 바로 시작하세요!</h2>
+        <p class="cta-text">무료로 가입하고 당신의 일상을 특별하게 기록해보세요</p>
+        {% if not user.is_authenticated %}
+            <a href="{% url 'accounts:signup' %}" class="btn-hero btn-hero-primary">
+                <i class="bi bi-person-plus"></i> 무료로 시작하기
+            </a>
+        {% else %}
+            <a href="{% url 'photo_gallery:photo_create' %}" class="btn-hero btn-hero-primary">
+                <i class="bi bi-plus-circle"></i> 첫 사진 업로드하기
+            </a>
+        {% endif %}
+    </div>
+</section>
 {% endblock %}

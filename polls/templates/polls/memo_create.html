@@ -1,9 +1,245 @@
 {% extends 'common/base.html' %}
+
+{% block title %}메모 작성 - Daily Snap{% endblock %}
+
+{% block extra_css %}
+<style>
+    .memo-create-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+
+    .memo-create-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .memo-create-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .memo-create-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .memo-create-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .memo-create-body {
+        padding: 2.5rem 2rem;
+    }
+
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    textarea.form-control {
+        min-height: 250px;
+        resize: vertical;
+    }
+
+    .form-check-input {
+        width: 1.5rem;
+        height: 1.5rem;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+    }
+
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    .form-check-label {
+        margin-left: 0.5rem;
+        cursor: pointer;
+        font-weight: 500;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn-memo {
+        padding: 0.875rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 2px solid;
+        flex: 1;
+        justify-content: center;
+    }
+
+    .btn-submit {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: #7f8c8d;
+        border-color: #e9ecef;
+    }
+
+    .btn-cancel:hover {
+        background: #f8f9fa;
+        border-color: #d1d5db;
+        transform: translateY(-2px);
+        color: #7f8c8d;
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #7f8c8d;
+        margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .memo-create-container {
+            padding: 1rem 0;
+        }
+
+        .memo-create-header {
+            padding: 1.5rem;
+        }
+
+        .memo-create-title {
+            font-size: 1.5rem;
+        }
+
+        .memo-create-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .form-actions {
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .btn-memo {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<form action="" method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input type="hidden" name="author" value="{{user.id}}">
-    <button type="submit">저장</button>
-</form>
+<div class="container memo-create-container">
+    <div class="memo-create-card">
+        <!-- Header -->
+        <div class="memo-create-header">
+            <h1 class="memo-create-title">
+                <i class="bi bi-pencil-square me-2"></i>
+                {% if form.instance.pk %}메모 수정{% else %}새 메모 작성{% endif %}
+            </h1>
+            <p class="memo-create-subtitle">생각과 아이디어를 자유롭게 기록하세요</p>
+        </div>
+
+        <!-- Form -->
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="author" value="{{ user.id }}">
+
+            <div class="memo-create-body">
+                {% for field in form %}
+                <div class="form-section">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {% if field.name == 'title' %}
+                            <i class="bi bi-card-heading"></i>
+                        {% elif field.name == 'content' %}
+                            <i class="bi bi-file-text"></i>
+                        {% elif field.name == 'is_important' %}
+                            <i class="bi bi-star"></i>
+                        {% endif %}
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span class="text-danger">*</span>
+                        {% endif %}
+                    </label>
+
+                    {% if field.name == 'is_important' %}
+                        <div class="form-check">
+                            {{ field }}
+                            <label class="form-check-label" for="{{ field.id_for_label }}">
+                                이 메모를 중요 메모로 표시
+                            </label>
+                        </div>
+                    {% else %}
+                        {{ field }}
+                    {% endif %}
+
+                    {% if field.help_text %}
+                        <div class="help-text">{{ field.help_text }}</div>
+                    {% endif %}
+
+                    {% if field.errors %}
+                        <div class="text-danger mt-2">
+                            {{ field.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button type="submit" class="btn-memo btn-submit">
+                    <i class="bi bi-check-circle"></i>
+                    {% if form.instance.pk %}수정 완료{% else %}작성 완료{% endif %}
+                </button>
+                <a href="{% if form.instance.pk %}{% url 'polls:memo_detail' form.instance.pk %}{% else %}{% url 'polls:memo_list' %}{% endif %}" class="btn-memo btn-cancel">
+                    <i class="bi bi-x-circle"></i>
+                    취소
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}

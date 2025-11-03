@@ -1,17 +1,219 @@
-<!-- memo_confirm_delete.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>메모 삭제</title>
-</head>
-<body>
-    <h1>메모 삭제 확인</h1>
-    <p>정말로 "{{ memo.title }}" 메모를 삭제하시겠습니까?</p>
+{% extends 'common/base.html' %}
 
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit">삭제</button>
-        <a href="{% url 'polls:memo_detail' memo.pk %}">취소</a>
-    </form>
-</body>
-</html>
+{% block title %}메모 삭제 - Daily Snap{% endblock %}
+
+{% block extra_css %}
+<style>
+    .delete-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+    }
+
+    .delete-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .delete-header {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .delete-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        animation: shake 0.5s;
+    }
+
+    @keyframes shake {
+        0%, 100% {
+            transform: translateX(0);
+        }
+        25% {
+            transform: translateX(-10px);
+        }
+        75% {
+            transform: translateX(10px);
+        }
+    }
+
+    .delete-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .delete-body {
+        padding: 2.5rem 2rem;
+        text-align: center;
+    }
+
+    .memo-info {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .memo-info-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #856404;
+        margin-bottom: 0.5rem;
+    }
+
+    .memo-info-text {
+        color: #856404;
+        margin-bottom: 0;
+    }
+
+    .warning-text {
+        color: #e74c3c;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .warning-description {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn-action {
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 2px solid;
+        flex: 1;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .btn-delete {
+        background: #e74c3c;
+        color: white;
+        border-color: #e74c3c;
+    }
+
+    .btn-delete:hover {
+        background: #c0392b;
+        border-color: #c0392b;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: white;
+        color: #667eea;
+        border-color: #667eea;
+    }
+
+    .btn-cancel:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    @media (max-width: 768px) {
+        .delete-container {
+            padding: 1rem;
+        }
+
+        .delete-title {
+            font-size: 1.5rem;
+        }
+
+        .delete-icon {
+            font-size: 3rem;
+        }
+
+        .delete-body {
+            padding: 2rem 1.5rem;
+        }
+
+        .delete-actions {
+            flex-direction: column-reverse;
+            padding: 1.5rem;
+        }
+
+        .btn-action {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="delete-container">
+    <div class="delete-card">
+        <!-- Header -->
+        <div class="delete-header">
+            <div class="delete-icon">
+                <i class="bi bi-exclamation-triangle"></i>
+            </div>
+            <h1 class="delete-title">메모 삭제 확인</h1>
+        </div>
+
+        <!-- Body -->
+        <div class="delete-body">
+            <div class="memo-info">
+                <div class="memo-info-title">
+                    <i class="bi bi-file-text me-2"></i>
+                    {{ memo.title }}
+                </div>
+                <p class="memo-info-text">위 메모를 삭제하시겠습니까?</p>
+            </div>
+
+            <p class="warning-text">
+                <i class="bi bi-exclamation-circle me-1"></i>
+                이 작업은 되돌릴 수 없습니다!
+            </p>
+            <p class="warning-description">
+                메모를 삭제하면 모든 내용이 영구적으로 제거됩니다.<br>
+                정말로 삭제하시겠습니까?
+            </p>
+        </div>
+
+        <!-- Actions -->
+        <form method="POST">
+            {% csrf_token %}
+            <div class="delete-actions">
+                <a href="{% url 'polls:memo_detail' memo.pk %}" class="btn-action btn-cancel">
+                    <i class="bi bi-x-circle"></i>
+                    취소
+                </a>
+                <button type="submit" class="btn-action btn-delete">
+                    <i class="bi bi-trash"></i>
+                    삭제하기
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

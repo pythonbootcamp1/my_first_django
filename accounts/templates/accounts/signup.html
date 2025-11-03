@@ -1,46 +1,406 @@
-<!-- templates/accounts/signup.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>회원가입</title>
-</head>
-<body>
-    <h1>회원가입</h1>
+{% extends 'common/base.html' %}
 
-    <!-- 에러 메시지 -->
-    {% if messages %}
-        {% for message in messages %}
-            <div>{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+{% block title %}회원가입 - Daily Snap{% endblock %}
 
-    <form method="post">
-        {% csrf_token %}
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: calc(100vh - 200px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
 
-        <div>
-            <label for="username">아이디</label>
-            <input type="text" id="username" name="username" required>
-            <small>영문, 숫자, _ 만 사용 가능</small>
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 3rem 2.5rem;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        width: 100%;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-logo {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: inline-block;
+        animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        padding: 0.875rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+
+    .form-control-icon {
+        position: relative;
+    }
+
+    .form-control-icon i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #95a5a6;
+        z-index: 1;
+    }
+
+    .form-control-icon .form-control {
+        padding-left: 2.75rem;
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #7f8c8d;
+        margin-top: 0.5rem;
+        display: block;
+    }
+
+    .btn-signup {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+        color: white;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .btn-signup:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-signup:active {
+        transform: translateY(0);
+    }
+
+    .auth-divider {
+        text-align: center;
+        margin: 1.5rem 0;
+        position: relative;
+    }
+
+    .auth-divider::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        height: 1px;
+        background: #e9ecef;
+    }
+
+    .auth-divider span {
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0 1rem;
+        color: #95a5a6;
+        position: relative;
+        font-size: 0.875rem;
+    }
+
+    .auth-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #7f8c8d;
+    }
+
+    .auth-link a {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .auth-link a:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .password-strength {
+        margin-top: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .password-strength-bar {
+        height: 4px;
+        border-radius: 2px;
+        background: #e9ecef;
+        margin-top: 0.5rem;
+        overflow: hidden;
+    }
+
+    .password-strength-fill {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .password-strength-fill.weak {
+        width: 33%;
+        background: #e74c3c;
+    }
+
+    .password-strength-fill.medium {
+        width: 66%;
+        background: #f39c12;
+    }
+
+    .password-strength-fill.strong {
+        width: 100%;
+        background: #27ae60;
+    }
+
+    @media (max-width: 576px) {
+        .auth-card {
+            padding: 2rem 1.5rem;
+            margin: 1rem;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+        }
+
+        .auth-logo {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo">📸</div>
+            <h1 class="auth-title">Daily Snap 시작하기</h1>
+            <p class="auth-subtitle">새로운 계정을 만들어 시작하세요</p>
         </div>
 
-        <div>
-            <label for="email">이메일</label>
-            <input type="email" id="email" name="email">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" id="signupForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="username" class="form-label">아이디</label>
+                <div class="form-control-icon">
+                    <i class="bi bi-person-fill"></i>
+                    <input type="text"
+                           class="form-control"
+                           id="username"
+                           name="username"
+                           placeholder="아이디를 입력하세요"
+                           required
+                           autofocus>
+                </div>
+                <small class="form-text">영문, 숫자, _ 만 사용 가능합니다</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">이메일 <span class="text-muted">(선택사항)</span></label>
+                <div class="form-control-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                    <input type="email"
+                           class="form-control"
+                           id="email"
+                           name="email"
+                           placeholder="example@email.com">
+                </div>
+                <small class="form-text">비밀번호 찾기에 사용됩니다</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password1" class="form-label">비밀번호</label>
+                <div class="form-control-icon">
+                    <i class="bi bi-lock-fill"></i>
+                    <input type="password"
+                           class="form-control"
+                           id="password1"
+                           name="password1"
+                           placeholder="비밀번호를 입력하세요"
+                           required>
+                </div>
+                <small class="form-text">8자 이상 입력하세요</small>
+                <div class="password-strength" id="passwordStrength" style="display: none;">
+                    <small class="text-muted" id="strengthText">비밀번호 강도: </small>
+                    <div class="password-strength-bar">
+                        <div class="password-strength-fill" id="strengthBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password2" class="form-label">비밀번호 확인</label>
+                <div class="form-control-icon">
+                    <i class="bi bi-lock-fill"></i>
+                    <input type="password"
+                           class="form-control"
+                           id="password2"
+                           name="password2"
+                           placeholder="비밀번호를 다시 입력하세요"
+                           required>
+                </div>
+                <small class="form-text" id="passwordMatch"></small>
+            </div>
+
+            <button type="submit" class="btn btn-signup">
+                <i class="bi bi-person-plus me-2"></i>가입하기
+            </button>
+        </form>
+
+        <div class="auth-divider">
+            <span>또는</span>
         </div>
 
-        <div>
-            <label for="password1">비밀번호</label>
-            <input type="password" id="password1" name="password1" required>
-            <small>8자 이상 입력하세요</small>
+        <div class="auth-link">
+            이미 계정이 있으신가요? <a href="{% url 'accounts:login' %}">로그인</a>
         </div>
+    </div>
+</div>
+{% endblock %}
 
-        <div>
-            <label for="password2">비밀번호 확인</label>
-            <input type="password" id="password2" name="password2" required>
-        </div>
+{% block extra_js %}
+<script>
+    // 비밀번호 강도 체크
+    const password1 = document.getElementById('password1');
+    const password2 = document.getElementById('password2');
+    const strengthIndicator = document.getElementById('passwordStrength');
+    const strengthBar = document.getElementById('strengthBar');
+    const strengthText = document.getElementById('strengthText');
+    const passwordMatch = document.getElementById('passwordMatch');
 
-        <button type="submit">가입하기</button>
-        <a href="{% url 'accounts:login' %}">이미 계정이 있으신가요?</a>
-    </form>
-</body>
-</html>
+    password1.addEventListener('input', function() {
+        const value = this.value;
+
+        if (value.length === 0) {
+            strengthIndicator.style.display = 'none';
+            return;
+        }
+
+        strengthIndicator.style.display = 'block';
+
+        let strength = 0;
+        if (value.length >= 8) strength++;
+        if (value.match(/[a-z]/) && value.match(/[A-Z]/)) strength++;
+        if (value.match(/[0-9]/)) strength++;
+        if (value.match(/[^a-zA-Z0-9]/)) strength++;
+
+        strengthBar.className = 'password-strength-fill';
+
+        if (strength <= 1) {
+            strengthBar.classList.add('weak');
+            strengthText.innerHTML = '비밀번호 강도: <span class="text-danger">약함</span>';
+        } else if (strength <= 3) {
+            strengthBar.classList.add('medium');
+            strengthText.innerHTML = '비밀번호 강도: <span class="text-warning">보통</span>';
+        } else {
+            strengthBar.classList.add('strong');
+            strengthText.innerHTML = '비밀번호 강도: <span class="text-success">강함</span>';
+        }
+
+        checkPasswordMatch();
+    });
+
+    password2.addEventListener('input', checkPasswordMatch);
+
+    function checkPasswordMatch() {
+        if (password2.value.length === 0) {
+            passwordMatch.textContent = '';
+            passwordMatch.className = 'form-text';
+            return;
+        }
+
+        if (password1.value === password2.value) {
+            passwordMatch.textContent = '✓ 비밀번호가 일치합니다';
+            passwordMatch.className = 'form-text text-success';
+        } else {
+            passwordMatch.textContent = '✗ 비밀번호가 일치하지 않습니다';
+            passwordMatch.className = 'form-text text-danger';
+        }
+    }
+
+    // 폼 제출 전 검증
+    document.getElementById('signupForm').addEventListener('submit', function(e) {
+        if (password1.value !== password2.value) {
+            e.preventDefault();
+            alert('비밀번호가 일치하지 않습니다.');
+            password2.focus();
+        }
+
+        if (password1.value.length < 8) {
+            e.preventDefault();
+            alert('비밀번호는 8자 이상이어야 합니다.');
+            password1.focus();
+        }
+    });
+</script>
+{% endblock %}

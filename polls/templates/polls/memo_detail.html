@@ -1,23 +1,282 @@
-<!-- memo_detail.html -->
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ memo.title }}</title>
-</head>
-<body>
-    <h1>{{ memo.title }}</h1>
-    {% if memo.is_important %}
-        <p>⭐ 중요한 메모</p>
-    {% endif %}
+{% extends 'common/base.html' %}
 
-    <div style="white-space: pre-wrap;">{{ memo.content }}</div>
+{% block title %}{{ memo.title }} - Daily Snap{% endblock %}
 
-    <p>작성일: {{ memo.created_at|date:"Y-m-d H:i:s" }}</p>
+{% block extra_css %}
+<style>
+    .memo-detail-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
 
-    {% if user==memo.user %}
-        <a href="{% url 'polls:memo_update' memo.pk %}">수정</a>
-        <a href="{% url 'polls:memo_delete' memo.pk %}">삭제</a>
-    {% endif %}
-    <a href="{% url 'polls:memo_list' %}">목록으로</a>
-</body>
-</html>
+    .memo-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .memo-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        position: relative;
+    }
+
+    .memo-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        word-wrap: break-word;
+    }
+
+    .memo-meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        font-size: 0.95rem;
+        opacity: 0.95;
+    }
+
+    .memo-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .memo-badge {
+        background: rgba(255, 255, 255, 0.3);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .memo-content-section {
+        padding: 2.5rem 2rem;
+    }
+
+    .memo-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #2c3e50;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        margin-bottom: 2rem;
+    }
+
+    .memo-footer {
+        padding: 1.5rem 2rem;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .memo-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .memo-actions-left {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-memo {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: 2px solid;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-color: transparent;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: white;
+        color: #667eea;
+        border-color: #667eea;
+    }
+
+    .btn-secondary-custom:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-danger-custom {
+        background: white;
+        color: #e74c3c;
+        border-color: #e74c3c;
+    }
+
+    .btn-danger-custom:hover {
+        background: #e74c3c;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+    }
+
+    .btn-outline-custom {
+        background: transparent;
+        color: #667eea;
+        border-color: #667eea;
+    }
+
+    .btn-outline-custom:hover {
+        background: #667eea;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .empty-content {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #95a5a6;
+    }
+
+    .empty-content i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    @media (max-width: 768px) {
+        .memo-detail-container {
+            padding: 1rem 0;
+        }
+
+        .memo-title {
+            font-size: 1.75rem;
+        }
+
+        .memo-header {
+            padding: 2rem 1.5rem;
+        }
+
+        .memo-content-section {
+            padding: 2rem 1.5rem;
+        }
+
+        .memo-footer {
+            padding: 1.5rem;
+        }
+
+        .memo-actions {
+            flex-direction: column;
+        }
+
+        .memo-actions-left {
+            width: 100%;
+        }
+
+        .btn-memo {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .memo-meta {
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container memo-detail-container">
+    <div class="memo-card">
+        <!-- Header -->
+        <div class="memo-header">
+            <h1 class="memo-title">{{ memo.title }}</h1>
+
+            <div class="memo-meta">
+                <div class="memo-meta-item">
+                    <i class="bi bi-calendar3"></i>
+                    <span>{{ memo.created_at|date:"Y년 m월 d일 H:i" }}</span>
+                </div>
+
+                {% if memo.is_important %}
+                <div class="memo-badge">
+                    <i class="bi bi-star-fill"></i>
+                    <span>중요한 메모</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="memo-content-section">
+            {% if memo.content %}
+                <div class="memo-content">{{ memo.content }}</div>
+            {% else %}
+                <div class="empty-content">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <p>메모 내용이 없습니다.</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="memo-footer">
+            <div class="memo-actions">
+                <div class="memo-actions-left">
+                    {% if user == memo.user %}
+                        <a href="{% url 'polls:memo_update' memo.pk %}" class="btn-memo btn-primary-custom">
+                            <i class="bi bi-pencil-square"></i> 수정
+                        </a>
+                        <a href="{% url 'polls:memo_delete' memo.pk %}" class="btn-memo btn-danger-custom">
+                            <i class="bi bi-trash"></i> 삭제
+                        </a>
+                    {% endif %}
+                </div>
+
+                <a href="{% url 'polls:memo_list' %}" class="btn-memo btn-outline-custom">
+                    <i class="bi bi-arrow-left"></i> 목록으로
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Info Card -->
+    <div class="memo-card" style="padding: 1.5rem 2rem;">
+        <div class="row">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <h6 class="text-muted mb-2">작성자</h6>
+                <div class="d-flex align-items-center">
+                    <div class="user-avatar me-2" style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                        {{ memo.user.username|first|upper }}
+                    </div>
+                    <span class="fw-bold">{{ memo.user.username }}</span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-muted mb-2">메모 ID</h6>
+                <span class="fw-bold">#{{ memo.id }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
