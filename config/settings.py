@@ -149,8 +149,14 @@ LOGIN_URL='/accounts/login/'
 LOGIN_REDIRECT_URL='/'
 LOGOUT_REDIRECT_URL='/'
 
-MEDIA_URL = "/media/"
+# Media files (사용자 업로드 파일)
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Security settings - 개발 환경에서 COOP 경고 제거
+if DEBUG:
+    SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+
 LIKELION = 900
 
 dev2 = 888

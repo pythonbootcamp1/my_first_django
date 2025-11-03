@@ -18,14 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('polls.urls')),
-    path('accounts/',include('accounts.urls')),
-    path('photo/',include('photo_gallery.urls')),
+    path('accounts/', include('accounts.urls')),
+    path('photo/', include('photo_gallery.urls')),
 ]
-# 우리들의서버주소/polls
 
+# 개발 환경에서 media 파일 서빙
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL
-                            ,document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
